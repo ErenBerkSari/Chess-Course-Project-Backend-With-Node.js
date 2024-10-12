@@ -1,0 +1,24 @@
+# Node.js bağımlılıkları
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS ile ilgili dosyalar
+.DS_Store
+Thumbs.db
+
+# Ortam değişkenleri
+.env
+
+# IDE editör dosyaları
+.vscode/
+.idea/
+
+# Temporary dosyalar
+tmp/
+temp/
