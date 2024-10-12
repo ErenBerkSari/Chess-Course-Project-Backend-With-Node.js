@@ -165,3 +165,4 @@ const logout = async (req, res) => {
     res.status(400).json({ message: "No token provided" });
   }
 };
+module.exports = { register, login, refresh, logout };
