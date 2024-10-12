@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const userRoute = require("./routes/userRoute");
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+app.use("/auth", userRoute);
 
 const port = 3000;
 app.listen(port, () => {
