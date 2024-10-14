@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const authRoute = require("./routes/authRoute");
 const userRoute = require("./routes/userRoute");
 
 dotenv.config();
@@ -21,8 +22,8 @@ mongoose
     console.log(err);
   });
 
-app.use("/auth", userRoute);
-
+app.use("/auth", authRoute);
+app.use("/users", userRoute);
 const port = 3000;
 app.listen(port, () => {
   console.log(`Sunucu ${port} portunda başlatıldı.`);
