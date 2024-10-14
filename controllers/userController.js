@@ -165,4 +165,24 @@ const logout = async (req, res) => {
     res.status(400).json({ message: "No token provided" });
   }
 };
-module.exports = { register, login, refresh, logout };
+
+const extractTokenInfo = (req, res) => {
+  const token = req.body.token;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token sağlanmadı" });
+  }
+
+  try {
+    // Token'ı doğrula ve bilgileri al
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    // Token'daki bilgileri döndür
+    const { userId, role, iat, exp } = decoded;
+
+    res.status(200).json({ userId, role, iat, exp });
+  } catch (error) {
+    return res.status(401).json({ message: "Geçersiz token" });
+  }
+};
+module.exports = { register, login, refresh, logout, extractTokenInfo };
