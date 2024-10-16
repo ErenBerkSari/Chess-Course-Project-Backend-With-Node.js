@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Progress = require("../models/Progress");
+const { updateUserProgress } = require("../controllers/progressController");
 const bcrypt = require("bcrypt");
 
 const getAllUsers = async (req, res) => {
@@ -142,6 +144,8 @@ const completeLesson = async (req, res) => {
 
     user.lessons[lessonIndex].isCompleted = true;
     await user.save();
+
+    await updateUserProgress(req, res);
 
     res.status(200).json({ message: "Ders başarıyla tamamlandı." });
   } catch (error) {
