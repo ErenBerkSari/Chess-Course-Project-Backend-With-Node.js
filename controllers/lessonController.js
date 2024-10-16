@@ -3,10 +3,14 @@ const User = require("../models/User");
 
 const getAllLessons = async (req, res) => {
   try {
-    const lessons = await Lesson.find().populate(
-      "lessonTeacher",
-      "username email"
-    );
+    const { categoryId } = req.query;
+    let filter = {};
+    if (categoryId) {
+      filter = { category: categoryId };
+    }
+    const lessons = await Lesson.find(filter)
+      .populate("lessonTeacher", "username email")
+      .sort("-createdAt");
     res.status(200).json(lessons);
   } catch (error) {
     res.status(500).json({ message: "Dersler yüklenirken bir hata oluştu." });

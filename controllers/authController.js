@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Token = require("../models/Token");
+const Progress = require("../models/Progress");
 
 const register = async (req, res) => {
   const { username, password, email, role } = req.body;
@@ -28,11 +29,18 @@ const register = async (req, res) => {
       return res.status(409).json({ message });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newProgress = new Progress({
+      overallProgress: 0,
+    });
+    await newProgress.save();
+
     const newUser = new User({
       username,
       password: hashedPassword,
       email,
       role,
+      progressInUser: newProgress._id,
     });
     await newUser.save();
 
