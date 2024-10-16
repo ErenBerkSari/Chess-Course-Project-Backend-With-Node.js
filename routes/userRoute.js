@@ -7,6 +7,7 @@ const {
   getUserLessons,
   enrollInLesson,
   unenrollFromLesson,
+  completeLesson,
 } = require("../controllers/userController");
 const { getUserProgress } = require("../controllers/progressController");
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -28,6 +29,14 @@ router.get("/overallProgress", getUserProgress);
 
 // Kullanıcıyı derse kaydet
 router.post("/enroll", enrollInLesson);
+
+// Kullanıcının dersini tamamlandı olarak işaretle
+router.post(
+  "/:lessonId/complete",
+  authMiddleware,
+  roleMiddleware(["student"]),
+  completeLesson
+);
 
 // Kullanıcıyı güncelle
 router.put("/:id", authMiddleware, roleMiddleware(["admin"]), updateUser);

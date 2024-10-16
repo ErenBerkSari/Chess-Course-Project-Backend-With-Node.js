@@ -30,8 +30,14 @@ const UserSchema = new mongoose.Schema({
   },
   lessons: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Lesson",
+      lessonId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Lesson",
+      },
+      isCompleted: {
+        type: Boolean,
+        default: false,
+      },
     },
   ],
 });

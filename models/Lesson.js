@@ -17,10 +17,6 @@ const LessonSchema = new mongoose.Schema({
   lessonLevel: {
     type: String,
   },
-  lessonIsCompleted: {
-    type: Boolean,
-    default: false,
-  },
   lessonTeacher: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

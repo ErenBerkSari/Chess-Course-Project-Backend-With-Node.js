@@ -127,6 +127,30 @@ const unenrollFromLesson = async (req, res) => {
       .json({ message: "Ders kaydınızı silerken bir hata oluştu." });
   }
 };
+
+const completeLesson = async (req, res) => {
+  const userId = req.user.userId;
+  const { lessonId } = req.params;
+  try {
+    const user = await User.findById(userId);
+    const lessonIndex = user.lessons.findIndex(
+      (lesson) => lesson.lessonId.toString() === lessonId
+    );
+    if (lessonIndex === -1) {
+      return res.status(404).json({ message: "Ders bulunamadı." });
+    }
+
+    user.lessons[lessonIndex].isCompleted = true;
+    await user.save();
+
+    res.status(200).json({ message: "Ders başarıyla tamamlandı." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Ders tamamlama sırasında bir hata oluştu." });
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -135,4 +159,5 @@ module.exports = {
   getUserLessons,
   enrollInLesson,
   unenrollFromLesson,
+  completeLesson,
 };
