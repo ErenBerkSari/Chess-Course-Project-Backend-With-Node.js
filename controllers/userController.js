@@ -63,9 +63,76 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getUserLessons = async (req, res) => {
+  try {
+    const userId = req.user.userId || req.params.userId;
+
+    const user = await User.findById(userId).populate("lessons");
+
+    if (!user) {
+      return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+    }
+
+    if (!user.lessons || user.lessons.length === 0) {
+      return res.status(204).json({ message: "Kayıtlı ders bulunmuyor." });
+    }
+
+    // Kullanıcının derslerini döndür
+    return res.status(200).json({ lessons: user.lessons });
+  } catch (error) {
+    return res.status(500).json({ message: "Sunucu hatası", error });
+  }
+};
+
+const enrollInLesson = async (req, res) => {
+  const { lessonId } = req.body;
+  const userId = req.user.userId;
+
+  try {
+    const lesson = await Lesson.findById(lessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "Ders bulunamadı." });
+    }
+
+    const user = await User.findById(userId);
+    if (user.lessons.includes(lessonId)) {
+      return res.status(400).json({ message: "Zaten bu derse kayıtlısınız." });
+    }
+
+    user.lessons.push(lessonId);
+    await user.save();
+
+    res.status(200).json({ message: "Derse başarıyla kayıt oldunuz.", lesson });
+  } catch (error) {
+    res.status(500).json({ message: "Derse kayıt olurken bir hata oluştu." });
+  }
+};
+const unenrollFromLesson = async (req, res) => {
+  const { lessonId } = req.body;
+  const userId = req.user.userId;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user.lessons.includes(lessonId)) {
+      return res.status(400).json({ message: "Bu derse kayıtlı değilsiniz." });
+    }
+
+    user.lessons = user.lessons.filter((id) => id.toString() !== lessonId);
+    await user.save();
+
+    res.status(200).json({ message: "Ders kaydınız başarıyla silindi." });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Ders kaydınızı silerken bir hata oluştu." });
+  }
+};
 module.exports = {
   getAllUsers,
   getUserById,
   updateUser,
   deleteUser,
+  getUserLessons,
+  enrollInLesson,
+  unenrollFromLesson,
 };

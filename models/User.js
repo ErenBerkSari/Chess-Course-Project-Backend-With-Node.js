@@ -24,6 +24,10 @@ const UserSchema = new mongoose.Schema({
     enum: ["student", "teacher", "admin"],
     default: "student",
   },
+  progressInUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Progress",
+  },
   lessons: [
     {
       type: mongoose.Schema.Types.ObjectId,

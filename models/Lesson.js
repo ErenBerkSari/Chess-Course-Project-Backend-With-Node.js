@@ -12,7 +12,7 @@ const LessonSchema = new mongoose.Schema({
     type: String,
   },
   lessonContent: {
-    type: Schema.Types.Mixed,
+    type: mongoose.Schema.Types.Mixed,
   },
   lessonLevel: {
     type: String,

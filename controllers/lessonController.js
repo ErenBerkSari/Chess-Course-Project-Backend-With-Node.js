@@ -1,4 +1,5 @@
 const Lesson = require("../models/Lesson");
+const User = require("../models/User");
 
 const getAllLessons = async (req, res) => {
   try {
@@ -37,7 +38,8 @@ const createLesson = async (req, res) => {
     lessonTeacher,
     lessonContent,
   } = req.body;
-  if (!lessonName || !lessonTeacher) {
+  const verifyTeacher = await User.findById(lessonTeacher);
+  if (!lessonName || !verifyTeacher) {
     return res
       .status(400)
       .json({ message: "Ders adı ve öğretmen zorunludur." });

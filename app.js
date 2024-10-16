@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const authRoute = require("./routes/authRoute");
 const userRoute = require("./routes/userRoute");
+const lessonRoute = require("./routes/lessonRoute");
+const categoryRoute = require("./routes/categoryRoute");
 
 dotenv.config();
 
@@ -24,6 +26,9 @@ mongoose
 
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
+app.use("/lessons", lessonRoute);
+app.use("/categories", categoryRoute);
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`Sunucu ${port} portunda başlatıldı.`);
