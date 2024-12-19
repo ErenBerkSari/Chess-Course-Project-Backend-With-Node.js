@@ -241,6 +241,15 @@ const logout = async (req, res) => {
   console.log("Logout işlemi başarılı");
 };
 
+const testMethod = async (req, res) => {
+  console.log("Tüm cookies:", req.cookies);
+  console.log("Access token:", req.cookies.accessToken);
+  res.json({
+    cookies: req.cookies,
+    message: "Cookie test",
+  });
+};
+
 const extractTokenInfo = (req, res) => {
   const token = req.cookies.accessToken;
 
@@ -355,4 +364,5 @@ module.exports = {
   logout,
   extractTokenInfo,
   checkAuthStatus,
+  testMethod,
 };
