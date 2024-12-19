@@ -27,11 +27,8 @@ app.use(cookieParser());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 //Connect DB
-
 mongoose
-  .connect(
-    "mongodb+srv://zeroth:sVjo2zfEOjqzIIYT@cluster5.hli1v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster5"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB bağlantısı başarılı!"))
   .catch((err) => console.error("MongoDB bağlantı hatası:", err));
 
