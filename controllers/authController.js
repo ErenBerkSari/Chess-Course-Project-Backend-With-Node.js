@@ -67,13 +67,10 @@ const register = async (req, res) => {
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === "production",
-      // sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 10 * 60 * 1000, // 10 dakika
       path: "/",
-      domain: "localhost", // Local geliştirme için
-      secure: false, // Local için false olmalı
-      sameSite: "lax", // Cross-domain için lax kullanın
     });
 
     res.cookie("refreshToken", refreshToken, {
@@ -82,9 +79,6 @@ const register = async (req, res) => {
       // sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000, // 1 gün
       path: "/",
-      domain: "localhost", // Local geliştirme için
-      secure: false, // Local için false olmalı
-      sameSite: "lax", // Cross-domain için lax kullanın
     });
 
     // Başarılı yanıt
@@ -146,32 +140,25 @@ const login = async (req, res) => {
       { refreshToken },
       { upsert: true }
     );
-    console.log("Setting cookies...");
 
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === "production",
-      // sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 10 * 60 * 1000,
       path: "/",
-      secure: false, // Local için false olmalı
-      sameSite: "lax", // Cross-domain için lax kullanın
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === "production",
-      // sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-      secure: false, // Local için false olmalı
-      sameSite: "lax", // Cross-domain için lax kullanın
     });
-    console.log("Cookies set, sending response...");
 
     console.log("Login işlemi başarılı");
-    console.log("Headers:", res.getHeaders()); // Cookie'lerin header'da olup olmadığını kontrol et
 
     res.json({ userId: user._id, email, role: user.role });
   } catch (error) {
