@@ -8,29 +8,44 @@ const {
   enrollInLesson,
   unenrollFromLesson,
   completeLesson,
+  lessonIsCompleted,
+  getCompletedLessons,
+  uploadProfileImage,
+  getTopUsers,
 } = require("../controllers/userController");
-const { getUserProgress } = require("../controllers/progressController");
+const {
+  getUserProgress,
+  updateUserProgress,
+} = require("../controllers/progressController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");
+const upload = require("../middlewares/multerMiddleware"); // Yukarıdaki multer ayarları
 
 const router = express.Router();
 
-// Tüm kullanıcıları getir
-router.get("/", getAllUsers);
+router.get("/", authMiddleware, roleMiddleware(["admin"]), getAllUsers);
 
-// Kullanıcının tüm derslerini getir
-router.get("/userLessons", getUserLessons);
+router.get("/top", getTopUsers);
 
-// ID ile kullanıcı getir
-router.get("/:id", getUserById);
+router.get("/userLessons", authMiddleware, getUserLessons);
 
-// ID ile kullanıcı getir
-router.get("/overallProgress", getUserProgress);
+router.get("/:id", authMiddleware, getUserById);
 
-// Kullanıcıyı derse kaydet
-router.post("/enroll", enrollInLesson);
+router.get("/overallProgress/:userId", authMiddleware, getUserProgress);
 
-// Kullanıcının dersini tamamlandı olarak işaretle
+router.put("/overallProgress/:userId", authMiddleware, updateUserProgress);
+
+router.get("/completedLessons", authMiddleware, getCompletedLessons);
+
+router.get("/:lessonId/lessonIsComplete", authMiddleware, lessonIsCompleted);
+
+router.post(
+  "/enroll",
+  authMiddleware,
+  roleMiddleware(["student"]),
+  enrollInLesson
+);
+
 router.post(
   "/:lessonId/complete",
   authMiddleware,
@@ -38,12 +53,21 @@ router.post(
   completeLesson
 );
 
-// Kullanıcıyı güncelle
+router.post(
+  "/uploadProfileImage/:userId",
+  authMiddleware, // Kullanıcının doğrulamasını kontrol eder
+  upload.single("profileImage"), // Resim yükleme işlemini yapar
+  uploadProfileImage // Profil resmini günceller
+);
 router.put("/:id", authMiddleware, roleMiddleware(["admin"]), updateUser);
 
-// Kullanıcıyı sil
 router.delete("/:id", authMiddleware, roleMiddleware(["admin"]), deleteUser);
 
-// Kullanıcıyı derse kaydet
-router.delete("/unenroll", unenrollFromLesson);
+router.delete(
+  "/unenroll",
+  authMiddleware,
+  roleMiddleware(["student"]),
+  unenrollFromLesson
+);
+
 module.exports = router;

@@ -16,10 +16,12 @@ const LessonSchema = new mongoose.Schema({
   },
   lessonLevel: {
     type: String,
+    enum: ["Beginner", "Middle", "Advanced"], // Bu alan dersin seviyesini tutar
   },
   lessonTeacher: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: [false, "Öğretmen ID'si zorunludur"],
   },
   createdAt: {
     type: Date,
@@ -28,6 +30,16 @@ const LessonSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
+  },
+  lessonTest: {
+    type: [
+      {
+        question: String,
+        options: [String],
+        correctAnswer: String,
+      },
+    ],
+    default: [], // Varsayılan olarak boş bir dizi
   },
 });
 

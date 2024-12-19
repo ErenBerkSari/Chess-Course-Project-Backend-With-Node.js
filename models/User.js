@@ -6,6 +6,10 @@ const UserSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  profileImage: {
+    type: String,
+    default: "",
+  },
   email: {
     type: String,
     required: true,
@@ -28,6 +32,10 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Progress",
   },
+  userLevel: {
+    type: String,
+    default: "Beginner",
+  },
   lessons: [
     {
       lessonId: {
@@ -40,6 +48,13 @@ const UserSchema = new mongoose.Schema({
       },
     },
   ],
+  articles: [
+    {
+      articleId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Article",
+      },
+    },
+  ],
 });
-
 module.exports = mongoose.model("User", UserSchema);

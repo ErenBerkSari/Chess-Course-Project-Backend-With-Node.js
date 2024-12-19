@@ -3,14 +3,21 @@ const User = require("../models/User");
 
 const getAllLessons = async (req, res) => {
   try {
-    const { categoryId } = req.query;
+    const { categoryId, lessonLevel } = req.query;
     let filter = {};
+
     if (categoryId) {
-      filter = { category: categoryId };
+      filter.category = categoryId;
     }
+
+    if (lessonLevel) {
+      filter.lessonLevel = lessonLevel;
+    }
+
     const lessons = await Lesson.find(filter)
       .populate("lessonTeacher", "username email")
       .sort("-createdAt");
+
     res.status(200).json(lessons);
   } catch (error) {
     res.status(500).json({ message: "Dersler yüklenirken bir hata oluştu." });
@@ -18,9 +25,11 @@ const getAllLessons = async (req, res) => {
 };
 
 const getLessonById = async (req, res) => {
-  const { id } = req.params;
+  const { lessonId } = req.params;
+  console.log("Gelen ID:", lessonId); // ID kontrolü
+
   try {
-    const lesson = await Lesson.findById(id).populate(
+    const lesson = await Lesson.findById(lessonId).populate(
       "lessonTeacher",
       "username email"
     );
@@ -41,9 +50,11 @@ const createLesson = async (req, res) => {
     lessonLevel,
     lessonTeacher,
     lessonContent,
+    lessonTest,
   } = req.body;
-  const verifyTeacher = await User.findById(lessonTeacher);
-  if (!lessonName || !verifyTeacher) {
+  console.log("Gelen Veriler:", req.body); // Gelen verileri logla
+
+  if (!lessonName) {
     return res
       .status(400)
       .json({ message: "Ders adı ve öğretmen zorunludur." });
@@ -56,10 +67,24 @@ const createLesson = async (req, res) => {
       lessonLevel,
       lessonTeacher,
       lessonContent,
+      lessonTest,
     });
-    await newLesson.save();
+    try {
+      await newLesson.validate();
+    } catch (validationError) {
+      console.error("Validasyon Hatası:", validationError.errors);
+      return res.status(400).json({
+        message: "Validasyon Hatası",
+        errors: validationError.errors,
+      });
+    }
+    const savedLesson = await newLesson.save();
+    console.log("Kaydedilen Ders:", savedLesson);
+
     res.status(201).json(newLesson);
   } catch (error) {
+    console.error("Ders Oluşturma Hatası:", error);
+
     res.status(500).json({ message: "Ders oluşturulurken bir hata oluştu." });
   }
 };
@@ -73,6 +98,7 @@ const updateLesson = async (req, res) => {
     lessonLevel,
     lessonIsCompleted,
     lessonContent,
+    lessonTest,
   } = req.body;
   try {
     const updatedLesson = await Lesson.findByIdAndUpdate(
@@ -84,6 +110,7 @@ const updateLesson = async (req, res) => {
         lessonLevel,
         lessonIsCompleted,
         lessonContent,
+        lessonTest,
       },
       { new: true } // Güncel dökümanı döndür
     );

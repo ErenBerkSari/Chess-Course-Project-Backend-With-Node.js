@@ -1,32 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getAllLessons,
-  getLessonById,
-  createLesson,
-  updateLesson,
-  deleteLesson,
-} = require("../controllers/lessonController");
+  getAllArticles,
+  getArticleById,
+  createArticle,
+  updateArticle,
+  deleteArticle,
+} = require("../controllers/articleController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");
-router.get("/", authMiddleware, getAllLessons);
+router.get("/", authMiddleware, getAllArticles);
 
-router.get("/:lessonId", authMiddleware, getLessonById);
+router.get("/:articleId", authMiddleware, getArticleById);
 
-router.post("/", createLesson);
+router.post("/", authMiddleware, createArticle);
 
 router.put(
-  "/:id",
+  "/:articleId",
   authMiddleware,
   roleMiddleware(["admin", "teacher"]),
-  updateLesson
+  updateArticle
 );
 
 router.delete(
-  "/:id",
+  "/:articleId",
   authMiddleware,
   roleMiddleware(["admin", "teacher"]),
-  deleteLesson
+  deleteArticle
 );
 
 module.exports = router;
