@@ -225,7 +225,6 @@ const logout = async (req, res) => {
     // secure: process.env.NODE_ENV === "production",
     // sameSite: "strict",
     path: "/",
-    domain: "localhost", // Local geliştirme için
     secure: false, // Local için false olmalı
     sameSite: "lax", // Cross-domain için lax kullanın
   });

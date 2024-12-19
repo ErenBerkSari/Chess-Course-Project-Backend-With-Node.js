@@ -31,6 +31,7 @@ const jwt = require("jsonwebtoken");
 // };
 const authMiddleware = (req, res, next) => {
   const token = req.cookies.accessToken; // Cookie'den token al
+  console.log("tokeni neden alamıyorum:", token);
   if (!token) {
     return res.status(401).json({ message: "Unauthorized, token missing" });
   }
