@@ -155,7 +155,6 @@ const login = async (req, res) => {
       // sameSite: "strict",
       maxAge: 10 * 60 * 1000,
       path: "/",
-      domain: "localhost", // Local geliştirme için
       secure: false, // Local için false olmalı
       sameSite: "lax", // Cross-domain için lax kullanın
     });
@@ -166,7 +165,6 @@ const login = async (req, res) => {
       // sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
-      domain: "localhost", // Local geliştirme için
       secure: false, // Local için false olmalı
       sameSite: "lax", // Cross-domain için lax kullanın
     });
