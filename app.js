@@ -38,7 +38,7 @@ app.use("/lessons", lessonRoute);
 app.use("/categories", categoryRoute);
 app.use("/articles", articleRoute);
 
-const port = 3000;
+const port = process.env.PORT || 3000; // Render'dan gelen dinamik PORT veya fallback olarak 3000 kullanılır
 app.listen(port, () => {
   console.log(`Sunucu ${port} portunda başlatıldı.`);
 });

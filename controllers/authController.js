@@ -67,18 +67,24 @@ const register = async (req, res) => {
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "strict",
       maxAge: 10 * 60 * 1000, // 10 dakika
       path: "/",
+      domain: "localhost", // Local geliştirme için
+      secure: false, // Local için false olmalı
+      sameSite: "lax", // Cross-domain için lax kullanın
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000, // 1 gün
       path: "/",
+      domain: "localhost", // Local geliştirme için
+      secure: false, // Local için false olmalı
+      sameSite: "lax", // Cross-domain için lax kullanın
     });
 
     // Başarılı yanıt
@@ -144,18 +150,24 @@ const login = async (req, res) => {
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "strict",
       maxAge: 10 * 60 * 1000,
       path: "/",
+      domain: "localhost", // Local geliştirme için
+      secure: false, // Local için false olmalı
+      sameSite: "lax", // Cross-domain için lax kullanın
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      // secure: process.env.NODE_ENV === "production",
+      // sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
+      domain: "localhost", // Local geliştirme için
+      secure: false, // Local için false olmalı
+      sameSite: "lax", // Cross-domain için lax kullanın
     });
 
     console.log("Login işlemi başarılı");
@@ -219,16 +231,22 @@ const logout = async (req, res) => {
   console.log("Logout işlemi başlatıldı");
   res.clearCookie("accessToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    // secure: process.env.NODE_ENV === "production",
+    // sameSite: "strict",
     path: "/",
+    domain: "localhost", // Local geliştirme için
+    secure: false, // Local için false olmalı
+    sameSite: "lax", // Cross-domain için lax kullanın
   });
   console.log("accessToken çerezi temizlendi");
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    // secure: process.env.NODE_ENV === "production",
+    // sameSite: "strict",
     path: "/",
+    domain: "localhost", // Local geliştirme için
+    secure: false, // Local için false olmalı
+    sameSite: "lax", // Cross-domain için lax kullanın
   });
   console.log("refreshToken çerezi temizlendi");
   res.status(200).json({ message: "Logout successful" });
@@ -323,9 +341,12 @@ const checkAuthStatus = async (req, res) => {
       // Yeni access token'ı cookie olarak ayarla
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        // secure: process.env.NODE_ENV === "production",
+        // sameSite: "strict",
         maxAge: 10 * 60 * 1000,
+        domain: "localhost", // Local geliştirme için
+        secure: false, // Local için false olmalı
+        sameSite: "lax", // Cross-domain için lax kullanın
       });
 
       res.json({
