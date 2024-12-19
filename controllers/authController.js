@@ -4,7 +4,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Token = require("../models/Token");
 const Progress = require("../models/Progress");
-app.use(cookieParser());
 
 const register = async (req, res) => {
   const { username, password, email, role } = req.body;
