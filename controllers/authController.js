@@ -67,16 +67,18 @@ const register = async (req, res) => {
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
       maxAge: 10 * 60 * 1000, // 10 dakika
       path: "/",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
+      secure: false,
+
       // secure: process.env.NODE_ENV === "production",
-      // sameSite: "strict",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 gün
       path: "/",
     });
@@ -144,7 +146,7 @@ const login = async (req, res) => {
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "lax",
       maxAge: 10 * 60 * 1000,
       path: "/",
@@ -152,7 +154,7 @@ const login = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
