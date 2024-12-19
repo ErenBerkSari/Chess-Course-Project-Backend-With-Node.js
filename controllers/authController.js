@@ -146,6 +146,7 @@ const login = async (req, res) => {
       { refreshToken },
       { upsert: true }
     );
+    console.log("Setting cookies...");
 
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
@@ -169,8 +170,11 @@ const login = async (req, res) => {
       secure: false, // Local için false olmalı
       sameSite: "lax", // Cross-domain için lax kullanın
     });
+    console.log("Cookies set, sending response...");
 
     console.log("Login işlemi başarılı");
+    console.log("Headers:", res.getHeaders()); // Cookie'lerin header'da olup olmadığını kontrol et
+
     res.json({ userId: user._id, email, role: user.role });
   } catch (error) {
     console.error("Sunucu hatası", error);
