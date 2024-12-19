@@ -233,8 +233,7 @@ const logout = async (req, res) => {
     // secure: process.env.NODE_ENV === "production",
     // sameSite: "strict",
     path: "/",
-    domain: "localhost", // Local geliştirme için
-    secure: false, // Local için false olmalı
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax", // Cross-domain için lax kullanın
   });
   console.log("refreshToken çerezi temizlendi");
@@ -333,8 +332,7 @@ const checkAuthStatus = async (req, res) => {
         // secure: process.env.NODE_ENV === "production",
         // sameSite: "strict",
         maxAge: 10 * 60 * 1000,
-        domain: "localhost", // Local geliştirme için
-        secure: false, // Local için false olmalı
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax", // Cross-domain için lax kullanın
       });
 
