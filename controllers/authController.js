@@ -68,7 +68,7 @@ const register = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 10 * 60 * 1000, // 10 dakika
       path: "/",
     });
@@ -77,7 +77,7 @@ const register = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
       // secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 1 gün
       path: "/",
     });
@@ -146,7 +146,7 @@ const login = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 10 * 60 * 1000,
       path: "/",
     });
@@ -154,7 +154,7 @@ const login = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
     });
@@ -225,7 +225,7 @@ const logout = async (req, res) => {
     // sameSite: "strict",
     path: "/",
     secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
-    sameSite: "lax", // Cross-domain için lax kullanın
+    sameSite: "none", // Cross-domain için none kullanın
   });
   console.log("accessToken çerezi temizlendi");
   res.clearCookie("refreshToken", {
@@ -234,7 +234,7 @@ const logout = async (req, res) => {
     // sameSite: "strict",
     path: "/",
     secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
-    sameSite: "lax", // Cross-domain için lax kullanın
+    sameSite: "none", // Cross-domain için none kullanın
   });
   console.log("refreshToken çerezi temizlendi");
   res.status(200).json({ message: "Logout successful" });
@@ -341,7 +341,7 @@ const checkAuthStatus = async (req, res) => {
         secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
         // sameSite: "strict",
         maxAge: 10 * 60 * 1000,
-        sameSite: "lax", // Cross-domain için lax kullanın
+        sameSite: "none", // Cross-domain için none kullanın
       });
 
       res.json({
