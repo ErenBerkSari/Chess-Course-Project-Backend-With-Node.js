@@ -71,6 +71,7 @@ const register = async (req, res) => {
       sameSite: "lax",
       maxAge: 10 * 60 * 1000, // 10 dakika
       path: "/",
+      domain: ".onrender.com", // Şimdilik bunu kaldırın
     });
 
     res.cookie("refreshToken", refreshToken, {
@@ -80,6 +81,7 @@ const register = async (req, res) => {
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 gün
       path: "/",
+      domain: ".onrender.com", // Şimdilik bunu kaldırın
     });
 
     // Başarılı yanıt
@@ -149,6 +151,7 @@ const login = async (req, res) => {
       sameSite: "lax",
       maxAge: 10 * 60 * 1000,
       path: "/",
+      domain: ".onrender.com", // Şimdilik bunu kaldırın
     });
 
     res.cookie("refreshToken", refreshToken, {
@@ -157,6 +160,7 @@ const login = async (req, res) => {
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
+      domain: ".onrender.com", // Şimdilik bunu kaldırın
     });
 
     console.log("Login işlemi başarılı");
@@ -226,6 +230,7 @@ const logout = async (req, res) => {
     path: "/",
     secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
     sameSite: "lax", // Cross-domain için lax kullanın
+    domain: ".onrender.com", // Şimdilik bunu kaldırın
   });
   console.log("accessToken çerezi temizlendi");
   res.clearCookie("refreshToken", {
@@ -235,6 +240,7 @@ const logout = async (req, res) => {
     path: "/",
     secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
     sameSite: "lax", // Cross-domain için lax kullanın
+    domain: ".onrender.com", // Şimdilik bunu kaldırın
   });
   console.log("refreshToken çerezi temizlendi");
   res.status(200).json({ message: "Logout successful" });
@@ -342,6 +348,7 @@ const checkAuthStatus = async (req, res) => {
         // sameSite: "strict",
         maxAge: 10 * 60 * 1000,
         sameSite: "lax", // Cross-domain için lax kullanın
+        domain: ".onrender.com", // Şimdilik bunu kaldırın
       });
 
       res.json({
