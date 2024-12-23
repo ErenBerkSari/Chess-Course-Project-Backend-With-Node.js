@@ -14,11 +14,20 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173", // Yerel geliştirme ortamı için
+  "https://chess-course-project-backend-with-node-js.onrender.com", // Render'daki backend URL
+];
+
 const corsOptions = {
-  origin: "http://localhost:5173", // İzin verilen origin
-  credentials: true, // İsteklerin kimlik bilgilerini (cookies, authorization headers vb.) içermesine izin ver
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS policy does not allow this origin"));
+    }
+  },
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
