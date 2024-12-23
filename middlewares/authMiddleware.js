@@ -1,10 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-  const token = req.cookies.accessToken; // Cookie'den token al
-  console.log("tokeni neden alamıyorum:", token);
-  console.log("Headers:", req.headers);
-  console.log("Cookies:", req.cookies);
+  const token =
+    req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
+  console.log("Token:", token);
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized, token missing" });
@@ -19,7 +18,6 @@ const authMiddleware = (req, res, next) => {
       }
     }
 
-    // Doğrulanan kullanıcı bilgilerini req.user'a ekle
     req.user = {
       userId: decoded.userId,
       role: decoded.role,
