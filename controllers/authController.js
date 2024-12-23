@@ -67,7 +67,7 @@ const register = async (req, res) => {
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
       sameSite: "lax",
       maxAge: 10 * 60 * 1000, // 10 dakika
       path: "/",
@@ -75,7 +75,7 @@ const register = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
       // secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // 1 gün
@@ -145,7 +145,7 @@ const login = async (req, res) => {
     // Çerez ayarları
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
       sameSite: "lax",
       maxAge: 10 * 60 * 1000,
       path: "/",
@@ -153,7 +153,7 @@ const login = async (req, res) => {
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000,
       path: "/",
@@ -224,7 +224,7 @@ const logout = async (req, res) => {
     // secure: process.env.NODE_ENV === "production",
     // sameSite: "strict",
     path: "/",
-    secure: false,
+    secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
     sameSite: "lax", // Cross-domain için lax kullanın
   });
   console.log("accessToken çerezi temizlendi");
@@ -233,7 +233,7 @@ const logout = async (req, res) => {
     // secure: process.env.NODE_ENV === "production",
     // sameSite: "strict",
     path: "/",
-    secure: false,
+    secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
     sameSite: "lax", // Cross-domain için lax kullanın
   });
   console.log("refreshToken çerezi temizlendi");
@@ -338,10 +338,9 @@ const checkAuthStatus = async (req, res) => {
       // Yeni access token'ı cookie olarak ayarla
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
-        // secure: process.env.NODE_ENV === "production",
+        secure: process.env.NODE_ENV === "production", // HTTPS için true yapın
         // sameSite: "strict",
         maxAge: 10 * 60 * 1000,
-        secure: false,
         sameSite: "lax", // Cross-domain için lax kullanın
       });
 
