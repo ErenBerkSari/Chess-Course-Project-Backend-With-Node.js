@@ -17,7 +17,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173", // Yerel geliştirme ortamı için
   "https://chess-course-project-backend-with-node-js.onrender.com", // Render'daki backend URL
-  "https://chess101.vercel.app/",
+  "https://chess101.vercel.app",
 ];
 
 const corsOptions = {
