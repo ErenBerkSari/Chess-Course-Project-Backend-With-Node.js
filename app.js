@@ -45,7 +45,6 @@ mongoose
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/lessons", lessonRoute);
-app.use("/categories", categoryRoute);
 app.use("/articles", articleRoute);
 
 const port = process.env.PORT || 3000; // Render'dan gelen dinamik PORT veya fallback olarak 3000 kullanılır
