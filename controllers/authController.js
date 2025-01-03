@@ -49,7 +49,7 @@ const register = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: newUser._id, role: newUser.role },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m" }
+      { expiresIn: "30m" }
     );
 
     const refreshToken = jwt.sign(
@@ -126,7 +126,7 @@ const login = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m" }
+      { expiresIn: "30m" }
     );
     const refreshToken = jwt.sign(
       { userId: user._id },
@@ -327,7 +327,7 @@ const checkAuthStatus = async (req, res) => {
       const newAccessToken = jwt.sign(
         { userId: user._id, role: user.role },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10m" }
+        { expiresIn: "30m" }
       );
 
       // Yeni access token'ı cookie olarak ayarla
