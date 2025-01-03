@@ -126,7 +126,7 @@ const login = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "50m" }
+      { expiresIn: "1m" }
     );
     const refreshToken = jwt.sign(
       { userId: user._id },
@@ -178,41 +178,6 @@ const login = async (req, res) => {
       details:
         process.env.NODE_ENV === "development" ? error.message : undefined,
     });
-  }
-};
-
-//COOKİYE EKLE ACCESS TOKENİ SONRA UNUTMUŞSSUN
-const refresh = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken; // Cookie'den refresh token'ı al
-
-  if (!refreshToken) {
-    return res.status(400).json({ message: "Refresh token sağlanmadı" });
-  }
-  try {
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    const user = await User.findById(decoded.userId);
-    const tokenRecord = await Token.findOne({ userId: user._id, refreshToken });
-
-    if (!user || !tokenRecord) {
-      return res
-        .status(403)
-        .json({ message: "Geçersiz veya süresi dolmuş refresh token" });
-    }
-
-    const accessToken = jwt.sign(
-      {
-        userId: user._id,
-        role: user.role,
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m" }
-    );
-
-    res.json({ accessToken, username: user.username });
-  } catch (error) {
-    return res
-      .status(401)
-      .json({ message: "Yetkisiz: Geçersiz veya süresi dolmuş refresh token" });
   }
 };
 
@@ -271,7 +236,7 @@ const checkAuthStatus = async (req, res) => {
     const accessToken = req.cookies.accessToken;
 
     if (!accessToken) {
-      throw new Error("No access token");
+      return res.status(401).json({ message: "Authentication required" });
     }
 
     // Token'ı doğrula
@@ -283,7 +248,7 @@ const checkAuthStatus = async (req, res) => {
       .populate("progressInUser");
 
     if (!user) {
-      throw new Error("User not found");
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.json({
@@ -294,60 +259,54 @@ const checkAuthStatus = async (req, res) => {
       progress: user.progressInUser,
     });
   } catch (error) {
-    // Access token geçersizse veya süresi dolmuşsa, refresh token ile yenilemeyi dene
-    try {
-      const refreshToken = req.cookies.refreshToken;
-
-      if (!refreshToken) {
-        return res.status(401).json({ message: "Authentication required" });
-      }
-
-      const decoded = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET
-      );
-      const tokenRecord = await Token.findOne({
-        userId: decoded.userId,
-        refreshToken,
-      });
-
-      if (!tokenRecord) {
-        throw new Error("Invalid refresh token");
-      }
-
-      const user = await User.findById(decoded.userId)
-        .select("-password")
-        .populate("progressInUser");
-
-      if (!user) {
-        throw new Error("User not found");
-      }
-
-      // Yeni access token oluştur
-      const newAccessToken = jwt.sign(
-        { userId: user._id, role: user.role },
-        process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10m" }
-      );
-
-      // Yeni access token'ı cookie olarak ayarla
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 10 * 60 * 1000,
-        sameSite: "none", // Cross-domain için none kullanın
-      });
-
-      res.json({
-        userId: user._id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-        progress: user.progressInUser,
-      });
-    } catch (refreshError) {
-      res.status(401).json({ message: "Authentication required" });
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Access token expired" });
     }
+
+    res
+      .status(500)
+      .json({ message: "An error occurred", details: error.message });
+  }
+};
+
+const refresh = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken; // Cookie'den refresh token'ı al
+
+  if (!refreshToken) {
+    return res.status(400).json({ message: "Refresh token sağlanmadı" });
+  }
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded.userId);
+    const tokenRecord = await Token.findOne({ userId: user._id, refreshToken });
+
+    if (!user || !tokenRecord) {
+      return res
+        .status(403)
+        .json({ message: "Geçersiz veya süresi dolmuş refresh token" });
+    }
+
+    const accessToken = jwt.sign(
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "10m" }
+    );
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 10 * 60 * 1000,
+      sameSite: "none",
+    });
+
+    res.json({ accessToken, username: user.username });
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ message: "Yetkisiz: Geçersiz veya süresi dolmuş refresh token" });
   }
 };
 module.exports = {
