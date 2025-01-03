@@ -49,7 +49,7 @@ const register = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: newUser._id, role: newUser.role },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "10m" }
+      { expiresIn: "50m" }
     );
 
     const refreshToken = jwt.sign(
@@ -126,7 +126,7 @@ const login = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1m" }
+      { expiresIn: "50m" }
     );
     const refreshToken = jwt.sign(
       { userId: user._id },
@@ -286,8 +286,7 @@ const checkAuthStatus = async (req, res) => {
       throw new Error("User not found");
     }
 
-    // Eğer token geçerliyse, kullanıcı bilgilerini döndür
-    return res.json({
+    res.json({
       userId: user._id,
       email: user.email,
       username: user.username,
@@ -295,76 +294,62 @@ const checkAuthStatus = async (req, res) => {
       progress: user.progressInUser,
     });
   } catch (error) {
-    // Eğer access token geçersizse veya süresi dolmuşsa
-    if (error.name === "TokenExpiredError") {
-      console.log("Access token süresi dolmuş. Yenileme işlemi başlatılıyor.");
+    // Access token geçersizse veya süresi dolmuşsa, refresh token ile yenilemeyi dene
+    try {
+      const refreshToken = req.cookies.refreshToken;
 
-      try {
-        // Refresh token'ı cookie'den al
-        const refreshToken = req.cookies.refreshToken;
-
-        if (!refreshToken) {
-          return res.status(401).json({ message: "Authentication required" });
-        }
-
-        // Refresh token'ı doğrula
-        const decoded = jwt.verify(
-          refreshToken,
-          process.env.REFRESH_TOKEN_SECRET
-        );
-
-        const tokenRecord = await Token.findOne({
-          userId: decoded.userId,
-          refreshToken,
-        });
-
-        if (!tokenRecord) {
-          throw new Error("Invalid refresh token");
-        }
-
-        // Kullanıcıyı bul
-        const user = await User.findById(decoded.userId)
-          .select("-password")
-          .populate("progressInUser");
-
-        if (!user) {
-          throw new Error("User not found");
-        }
-
-        // Yeni access token oluştur
-        const newAccessToken = jwt.sign(
-          { userId: user._id, role: user.role },
-          process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "10m" }
-        );
-
-        // Yeni access token'ı cookie olarak ayarla
-        res.cookie("accessToken", newAccessToken, {
-          httpOnly: true,
-          secure: true,
-          maxAge: 10 * 60 * 1000,
-          sameSite: "none", // Cross-domain için none kullanın
-        });
-
-        // Yenilenmiş token ile kullanıcı bilgilerini döndür
-        return res.json({
-          userId: user._id,
-          email: user.email,
-          username: user.username,
-          role: user.role,
-          progress: user.progressInUser,
-        });
-      } catch (refreshError) {
-        console.error("Token yenileme başarısız:", refreshError);
+      if (!refreshToken) {
         return res.status(401).json({ message: "Authentication required" });
       }
-    }
 
-    // Diğer hatalar için
-    return res.status(401).json({ message: "Authentication required" });
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET
+      );
+      const tokenRecord = await Token.findOne({
+        userId: decoded.userId,
+        refreshToken,
+      });
+
+      if (!tokenRecord) {
+        throw new Error("Invalid refresh token");
+      }
+
+      const user = await User.findById(decoded.userId)
+        .select("-password")
+        .populate("progressInUser");
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      // Yeni access token oluştur
+      const newAccessToken = jwt.sign(
+        { userId: user._id, role: user.role },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "10m" }
+      );
+
+      // Yeni access token'ı cookie olarak ayarla
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 10 * 60 * 1000,
+        sameSite: "none", // Cross-domain için none kullanın
+      });
+
+      res.json({
+        userId: user._id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        progress: user.progressInUser,
+      });
+    } catch (refreshError) {
+      res.status(401).json({ message: "Authentication required" });
+    }
   }
 };
-
 module.exports = {
   register,
   login,
