@@ -14,8 +14,10 @@ const getAllUsers = async (req, res) => {
 };
 const getTopUsers = async (req, res) => {
   try {
-    // Kullanıcıları ve progressInUser'ı populate ediyoruz
-    const users = await User.find().populate("progressInUser");
+    // Kullanıcıları ve progressInUser'ı populate ediyoruz, password'ü hariç tutuyoruz
+    const users = await User.find()
+      .select("-password")
+      .populate("progressInUser");
 
     // Kullanıcıları genel ilerlemeye göre azalan sırayla sıralıyoruz
     const sortedUsers = users.sort(
@@ -26,8 +28,6 @@ const getTopUsers = async (req, res) => {
 
     // İlk 5 kullanıcıyı alıyoruz
     const topUsers = sortedUsers.slice(0, 5);
-
-    console.log(topUsers); // Konsola yazdırarak kontrol edebilirsiniz
 
     // İlk 5 kullanıcıyı geri gönderiyoruz
     res.status(200).json(topUsers);
