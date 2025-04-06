@@ -9,7 +9,7 @@ const {
 } = require("../controllers/articleController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const roleMiddleware = require("../middlewares/roleMiddleware");
-router.get("/", authMiddleware, getAllArticles);
+router.get("/", getAllArticles);
 
 router.get("/:articleId", authMiddleware, getArticleById);
 
