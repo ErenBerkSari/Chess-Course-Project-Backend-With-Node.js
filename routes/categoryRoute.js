@@ -14,7 +14,7 @@ router.post(
   roleMiddleware(["admin"]),
   createCategory
 );
-router.get("/deleteCategory/:id", deleteCategory);
+router.get("/deleteCategory/:id", authMiddleware, deleteCategory);
 router.get("/getAllCategories", getAllCategories);
 
 module.exports = router;

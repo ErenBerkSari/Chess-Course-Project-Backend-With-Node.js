@@ -13,7 +13,7 @@ router.get("/", authMiddleware, getAllLessons);
 
 router.get("/:lessonId", authMiddleware, getLessonById);
 
-router.post("/", createLesson);
+router.post("/", authMiddleware, createLesson);
 
 router.put(
   "/:id",
