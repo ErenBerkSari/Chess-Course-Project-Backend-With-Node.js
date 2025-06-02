@@ -17,7 +17,7 @@ const app = express();
 const allowedOrigins = [
   // "https://chess-course-project-backend-with-node-js.onrender.com",
   "https://chess-course-project-backend-wit-production.up.railway.app",
-  "https://chess101.vercel.app",
+  "https://chess-101.netlify.app",
 ];
 
 const corsOptions = {
