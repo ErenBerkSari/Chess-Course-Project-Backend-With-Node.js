@@ -17,7 +17,6 @@ const app = express();
 const allowedOrigins = [
   "https://chess-course-project-backend-wit-production.up.railway.app",
   "https://chess-101.netlify.app",
-  "http://localhost:5173",
 ];
 
 const corsOptions = {
